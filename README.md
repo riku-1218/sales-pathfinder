@@ -9,16 +9,16 @@ Sales Pathfinderは、指定された企業をリサーチし、商談で使え�
 
 ## 🏗 アーキテクチャ
 
-Dify単体、またはDifyとGoogle Docsを連携させて動作します。
-（本ポートフォリオでは、Dify Web App上での入出力のみでも機能します）
+Difyで推論・生成を行い、Make経由でSlack通知とGoogle Docs作成を行います。
 
 ```mermaid
 graph LR
     User((User)) -->|Input Form| Dify[Dify Web App]
     Dify -->|Search & Analysis| Dify
-    Dify -->|Display Result| User
-    Dify -->|"Webhook (Optional)"| Make
+    Dify -->|Webhook| Make
+    Make -->|Notify| Slack
     Make -->|Create| GDocs[Google Docs]
+    Make -->|Link URL| Slack
 ```
 
 ---
@@ -30,22 +30,23 @@ graph LR
 Difyの **"Workflow App"** として構築します。
 
 1.  Difyにて「空白から作成」→「ワークフロー」を選択。
-2.  このリポジトリの `src/dify-workflows/` にあるDSLファイルをインポート（または参考にして構築）。
+2.  このリポジトリの `src/dify-workflows/` にあるDSLファイルをインポート。
 3.  **入力変数 (Input Variables)** を設定：
     *   `company_name` (Text input, Required)
     *   `company_url` (Text input, Required)
     *   `product_name` (Text input, Required)
-4.  **処理フロー**:
-    *   Google Search / Tavily Search ノードで情報収集。
-    *   LLMノードで分析・ライティング。
-    *   **終了 (End)** ノードで結果のテキストを出力。
+4.  **Webhook設定**:
+    *   後述するMakeのWebhook URLを、Difyワークフロー末尾の「HTTP Request」ノードに設定します。
 
-### 2. (Optional) Make & Google Docs
+### 2. Make (Automation)
 
-結果をGoogle Docsとして保存したい場合の拡張設定です。
+Difyの出力を受け取り、各種ツールへ連携します。
 
-*   Difyワークフローの最後に「HTTP Request」ノードを追加し、MakeのWebhook URLにデータを送信します。
-*   Make側で受け取ったデータを元に `Create a Document from Template` を実行します。
+1.  Makeにて新規シナリオを作成し、**Custom Webhook** をトリガーに設定。
+2.  以下のフローを構築します：
+    *   **Webhook**: Difyからのデータ受信
+    *   **Google Docs**: テンプレートからドキュメントを作成 (`Create a Document from Template`)
+    *   **Slack**: 作成されたドキュメントのURLを通知 (`Send a Message`)
 
 ---
 
