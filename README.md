@@ -17,7 +17,7 @@ graph LR
     User((User)) -->|Input Form| Dify[Dify Web App]
     Dify -->|Search & Analysis| Dify
     Dify -->|Display Result| User
-    Dify -->|Webhook (Optional)| Make
+    Dify -->|"Webhook (Optional)"| Make
     Make -->|Create| GDocs[Google Docs]
 ```
 
