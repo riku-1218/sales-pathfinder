@@ -2219,7 +2219,7 @@ workflow:
           max_write_timeout: 0
         title: HTTP リクエスト
         type: http-request
-        url: https://hook.us2.make.com/cuixskixncqnlwqqxfxgjqp7sq24t6oa
+        url: https://hook.us2.make.com/INSERT_YOUR_WEBHOOK_URL_HERE
         variables: []
       height: 153
       id: '1767947668288'
