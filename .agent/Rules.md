@@ -1,0 +1,1 @@
+/Users/sekineriku/.gemini/RULES.md
